@@ -1,0 +1,130 @@
+<section class="login-page">
+  <div class="login-card">
+    <aside class="login-brand">
+      <img
+        src="/assets/brand/marcasa-login-hero.png"
+        alt="Marcasa FoodService"
+        class="brand-image"
+      />
+    </aside>
+
+    <main class="login-content">
+      <div class="login-header">
+        <p class="eyebrow">Sistema administrativo</p>
+        <h1>Bienvenido</h1>
+        <p class="subtitle">
+          Ingresá tus credenciales para gestionar inventario, pedidos,
+          autorizaciones y entregas.
+        </p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="ingresar()" autocomplete="off">
+        <div class="form-group">
+          <label for="usuario">Usuario</label>
+
+          <input
+            id="usuario"
+            type="text"
+            formControlName="usuario"
+            placeholder="Ej. gabriel"
+            maxlength="60"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+          />
+
+          <small
+            class="error"
+            *ngIf="usuario?.touched && usuario?.hasError('required')"
+          >
+            El usuario es obligatorio.
+          </small>
+
+          <small
+            class="error"
+            *ngIf="usuario?.touched && usuario?.hasError('minlength')"
+          >
+            El usuario debe tener al menos 3 caracteres.
+          </small>
+
+          <small
+            class="error"
+            *ngIf="usuario?.touched && usuario?.hasError('usuarioInseguro')"
+          >
+            El usuario solo puede contener letras, números, punto, guion y guion bajo.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+
+          <div class="password-field">
+            <input
+              id="password"
+              [type]="mostrarPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Ingresá tu contraseña"
+              maxlength="100"
+              autocomplete="current-password"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="alternarPassword()"
+              [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              <svg
+                *ngIf="!mostrarPassword"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 5C6.48 5 2.03 8.52 1 12c1.03 3.48 5.48 7 11 7s9.97-3.52 11-7c-1.03-3.48-5.48-7-11-7Zm0 11.5A4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 0 1 0 9Zm0-2A2.5 2.5 0 1 0 12 9.5a2.5 2.5 0 0 0 0 5Z"
+                />
+              </svg>
+
+              <svg
+                *ngIf="mostrarPassword"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2.71 3.16 1.39 4.48l3.02 3.02C2.82 8.75 1.65 10.35 1 12c1.03 3.48 5.48 7 11 7 1.8 0 3.49-.37 4.95-1.01l2.57 2.57 1.32-1.32L2.71 3.16ZM12 16.5A4.5 4.5 0 0 1 7.5 12c0-.86.24-1.67.66-2.35l1.53 1.53A2.5 2.5 0 0 0 12.82 14.3l1.53 1.53c-.68.42-1.49.66-2.35.66Zm0-11.5c5.52 0 9.97 3.52 11 7-.45 1.51-1.53 2.93-2.98 4.06l-2.18-2.18A4.5 4.5 0 0 0 10.12 6.16L8.44 4.48A11.8 11.8 0 0 1 12 5Z"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <small
+            class="error"
+            *ngIf="password?.touched && password?.hasError('required')"
+          >
+            La contraseña es obligatoria.
+          </small>
+
+          <small
+            class="error"
+            *ngIf="password?.touched && password?.hasError('minlength')"
+          >
+            La contraseña debe tener al menos 8 caracteres.
+          </small>
+        </div>
+
+        <div class="alert-error" *ngIf="mensajeError">
+          {{ mensajeError }}
+        </div>
+
+        <button
+          type="submit"
+          class="login-button"
+          [disabled]="loginForm.invalid || cargando"
+        >
+          {{ cargando ? 'Validando...' : 'Ingresar' }}
+        </button>
+      </form>
+    </main>
+  </div>
+</section>
