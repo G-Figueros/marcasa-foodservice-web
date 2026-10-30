@@ -29,6 +29,11 @@ export class AuthService {
     );
   }
 
+  changePassword(passwordActual: string, passwordNuevo: string, confirmacion: string) {
+    return this.http.post<ApiResponse<unknown>>('/api/Auth/change-password',
+      { passwordActual, passwordNuevo, confirmacion });
+  }
+
   logout(): void {
     sessionStorage.removeItem(SESSION_KEY);
     this.state.set(null);

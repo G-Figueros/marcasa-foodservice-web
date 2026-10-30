@@ -2,12 +2,39 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   ApiResponse, Cliente, EstadoResultado, Inventario, Pedido, PedidoFiltro,
-  PedidoResumen, Producto, RutaFila
+  PedidoResumen, Producto, RutaFila, UsuarioAdmin, RolUsuario, GuardarUsuario,
+  RolAdmin, PermisoRol, GuardarRol
 } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
+
+  usuarios() { return this.http.get<ApiResponse<UsuarioAdmin[]>>('/api/usuarios'); }
+  rolesUsuarios() { return this.http.get<ApiResponse<RolUsuario[]>>('/api/usuarios/roles'); }
+  crearUsuario(data: GuardarUsuario) {
+    return this.http.post<ApiResponse<{ usuarioId: number; passwordTemporal: string }>>('/api/usuarios', data);
+  }
+  editarUsuario(id: number, data: GuardarUsuario) {
+    return this.http.put<ApiResponse<unknown>>(`/api/usuarios/${id}`, data);
+  }
+  estadoUsuario(id: number, activo: boolean) {
+    return this.http.patch<ApiResponse<unknown>>(`/api/usuarios/${id}/estado`, { activo });
+  }
+  reiniciarPassword(id: number) {
+    return this.http.post<ApiResponse<{ usuarioId: number; passwordTemporal: string }>>(`/api/usuarios/${id}/reiniciar-password`, {});
+  }
+
+  rolesAdmin() { return this.http.get<ApiResponse<RolAdmin[]>>('/api/roles'); }
+  permisosRol(rolId?: number) {
+    return this.http.get<ApiResponse<PermisoRol[]>>('/api/roles/permisos',
+      { params: rolId ? { rolId } : {} });
+  }
+  crearRol(data: GuardarRol) { return this.http.post<ApiResponse<{ rolId: number }>>('/api/roles', data); }
+  editarRol(id: number, data: GuardarRol) { return this.http.put<ApiResponse<unknown>>(`/api/roles/${id}`, data); }
+  estadoRol(id: number, activo: boolean) {
+    return this.http.patch<ApiResponse<unknown>>(`/api/roles/${id}/estado`, { activo });
+  }
 
   clientes(textoBusqueda = '') {
     return this.http.get<ApiResponse<Cliente[]>>('/api/clientes', { params: { textoBusqueda } });

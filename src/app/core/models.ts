@@ -28,6 +28,51 @@ export interface LoginData {
   token: string;
 }
 
+export interface UsuarioAdmin {
+  usuarioId: number;
+  nombreUsuario: string;
+  nombres: string;
+  apellidos: string | null;
+  correo: string | null;
+  telefono: string | null;
+  rolId: number;
+  nombreRol: string;
+  activo: boolean;
+  debeCambiarPassword: boolean;
+  fechaCreacion: string;
+  ultimoAcceso: string | null;
+}
+
+export interface RolUsuario { rolId: number; nombre: string; }
+
+export interface RolAdmin {
+  rolId: number;
+  nombre: string;
+  descripcion: string | null;
+  activo: boolean;
+  usuariosActivos: number;
+  permisosHabilitados: number;
+}
+
+export interface PermisoRol {
+  permisoId: number;
+  codigo: string;
+  nombre: string;
+  descripcion: string | null;
+  habilitado: boolean;
+}
+
+export interface GuardarRol { nombre: string; descripcion: string | null; permisoIds: number[]; }
+
+export interface GuardarUsuario {
+  nombreUsuario: string;
+  nombres: string;
+  apellidos: string | null;
+  correo: string | null;
+  telefono: string | null;
+  rolId: number;
+}
+
 export interface Cliente {
   clienteId: number;
   codigoCliente: string;

@@ -22,7 +22,7 @@ export class Login {
   private readonly formBuilder = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
+  readonly route = inject(ActivatedRoute);
 
   public mostrarPassword = false;
   public cargando = false;
@@ -80,7 +80,9 @@ export class Login {
           return;
         }
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        void this.router.navigateByUrl(returnUrl?.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/panel');
+        void this.router.navigateByUrl(response.data?.usuario.debeCambiarPassword
+          ? '/cambiar-contrasena'
+          : (returnUrl?.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/panel'));
       },
       error: (error: HttpErrorResponse) => {
         this.cargando = false;

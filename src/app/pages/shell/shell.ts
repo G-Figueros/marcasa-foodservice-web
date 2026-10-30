@@ -22,6 +22,8 @@ import { AuthService } from '../../core/auth.service';
           @if (auth.can('VER_PEDIDOS_AUTORIZADOS')) { <a routerLink="/autorizados" routerLinkActive="active" (click)="menuOpen.set(false)"><span>✓</span> Autorizados</a> }
           @if (auth.can('VER_PEDIDOS_PENDIENTES_ENTREGA')) { <a routerLink="/entregas" routerLinkActive="active" (click)="menuOpen.set(false)"><span>⇥</span> Entregas</a> }
           @if (auth.can('EXPORTAR_PDF_RUTA')) { <a routerLink="/ruta" routerLinkActive="active" (click)="menuOpen.set(false)"><span>▧</span> Hoja de ruta</a> }
+          @if (auth.user()?.nombreRol === 'Gerente' && auth.can('VER_USUARIOS')) { <a routerLink="/usuarios" routerLinkActive="active" (click)="menuOpen.set(false)"><span>♙</span> Usuarios</a> }
+          @if (auth.user()?.nombreRol === 'Gerente' && auth.can('VER_ROLES')) { <a routerLink="/roles" routerLinkActive="active" (click)="menuOpen.set(false)"><span>♧</span> Roles</a> }
         </nav>
         <div class="sidebar-foot"><span class="online-dot"></span> Conectado al sistema</div>
       </aside>
@@ -34,6 +36,7 @@ import { AuthService } from '../../core/auth.service';
           <div class="topbar-user">
             <span class="avatar">{{ initials() }}</span>
             <span class="user-meta"><strong>{{ auth.user()?.nombreCompleto }}</strong><small>{{ auth.user()?.nombreRol }}</small></span>
+            <a class="btn btn-quiet" routerLink="/cambiar-contrasena" title="Cambiar contraseña">Contraseña</a>
             <button class="btn btn-quiet" (click)="logout()" title="Cerrar sesión">Salir</button>
           </div>
         </header>

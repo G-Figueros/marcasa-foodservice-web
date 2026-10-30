@@ -36,12 +36,12 @@ interface ReviewLine {
 
       @if (canAuthorize(item)) {
         <section class="surface form-section"><div class="surface-header"><div><p class="section-kicker">AUTORIZACIÓN</p><h2>Revisión de productos</h2></div></div>
-          <p class="muted">Marcá cada producto como correcto. Si alguno queda observado, el pedido volverá para corrección.</p>
+          <p class="muted">Verificá cada producto y marcá su casilla. La autorización requiere que todos estén confirmados.</p>
           @for (line of item.detalles; track line.pedidoDetalleId; let i = $index) {
             <div class="review-line"><label class="checkbox-label"><input type="checkbox" [(ngModel)]="review[i].marcadoOK"><span><strong>{{ line.producto }}</strong><small>{{ line.tipoPesoDescripcion }} · {{ line.cantidadReservadaLbs }} lb reservadas</small></span></label><input [(ngModel)]="review[i].comentario" maxlength="500" placeholder="Comentario de revisión (opcional)"></div>
           }
           <label>Comentario general<textarea [(ngModel)]="comentario" maxlength="500" rows="2" placeholder="Notas de autorización"></textarea></label>
-          <div class="form-actions"><button class="btn btn-primary" [disabled]="working()" (click)="autorizar()">{{ working() ? 'Procesando…' : 'Procesar autorización' }}</button></div>
+          <div class="form-actions"><button class="btn btn-primary" [disabled]="working() || !allReviewed()" (click)="autorizar()">{{ working() ? 'Procesando…' : 'Autorizar pedido' }}</button></div>
         </section>
       }
 
@@ -81,13 +81,14 @@ export class OrderDetail implements OnInit {
   canApproveCancel(p: Pedido): boolean { return this.auth.can('APROBAR_CANCELACION_PEDIDOS') && p.codigoEstado === 'CANCELACION_SOLICITADA'; }
   canDeliver(p: Pedido): boolean { return this.auth.can('CONFIRMAR_ENTREGA') && ['PENDIENTE_ENTREGA', 'AUTORIZADO_RUTA'].includes(p.codigoEstado); }
   hasActions(p: Pedido): boolean { return this.canReturn(p) || this.canRequestCancel(p) || this.canApproveCancel(p) || this.canDeliver(p); }
+  allReviewed(): boolean { return this.review.length > 0 && this.review.every(line => line.marcadoOK); }
 
   load(): void {
     this.loading.set(true);
     this.api.pedido(this.id).subscribe({
       next: response => {
         this.pedido.set(response.data);
-        this.review = response.data.detalles.map(line => ({ pedidoDetalleId: line.pedidoDetalleId, marcadoOK: true, comentario: '' }));
+        this.review = response.data.detalles.map(line => ({ pedidoDetalleId: line.pedidoDetalleId, marcadoOK: false, comentario: '' }));
         this.loading.set(false);
       },
       error: error => { this.error.set(error.status === 404 ? 'No se encontró el pedido.' : error.error?.message || 'No se pudo cargar el pedido.'); this.loading.set(false); }
@@ -95,7 +96,7 @@ export class OrderDetail implements OnInit {
   }
 
   autorizar(): void {
-    if (!this.review.length) return;
+    if (!this.allReviewed()) { this.error.set('Debés confirmar todos los productos antes de autorizar.'); return; }
     this.working.set(true); this.error.set(''); this.success.set('');
     this.api.autorizar(this.id, { comentario: this.comentario.trim() || null, detalleAutorizacion: this.review.map(line => ({ pedidoDetalleId: line.pedidoDetalleId, marcadoOK: line.marcadoOK, comentario: line.comentario.trim() || null })) }).subscribe({
       next: response => this.finish(response.message), error: error => this.fail(error)

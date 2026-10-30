@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
-import { authGuard, guestGuard, permissionGuard } from './core/auth.guard';
+import { authGuard, guestGuard, permissionGuard, signedInGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   {
@@ -13,12 +13,15 @@ export const routes: Routes = [
     component: Login,
     canActivate: [guestGuard]
   },
+  { path: 'cambiar-contrasena', loadComponent: () => import('./pages/change-password/change-password').then(m => m.ChangePassword), canActivate: [signedInGuard] },
   {
     path: '',
     loadComponent: () => import('./pages/shell/shell').then(m => m.Shell),
     canActivate: [authGuard],
     children: [
       { path: 'panel', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
+      { path: 'usuarios', loadComponent: () => import('./pages/users/users').then(m => m.Users), data: { role: 'Gerente', permissions: ['VER_USUARIOS'] }, canActivate: [permissionGuard] },
+      { path: 'roles', loadComponent: () => import('./pages/roles/roles').then(m => m.Roles), data: { role: 'Gerente', permissions: ['VER_ROLES'] }, canActivate: [permissionGuard] },
       { path: 'clientes', loadComponent: () => import('./pages/catalog/catalog').then(m => m.Catalog), data: { kind: 'clientes', permissions: ['VER_CLIENTES'] }, canActivate: [permissionGuard] },
       { path: 'productos', loadComponent: () => import('./pages/catalog/catalog').then(m => m.Catalog), data: { kind: 'productos', permissions: ['VER_PRODUCTOS'] }, canActivate: [permissionGuard] },
       { path: 'inventario', loadComponent: () => import('./pages/catalog/catalog').then(m => m.Catalog), data: { kind: 'inventario', permissions: ['VER_INVENTARIO'] }, canActivate: [permissionGuard] },

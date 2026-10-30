@@ -34,3 +34,9 @@ pnpm build
 pnpm exec ng test --watch=false
 ```
 
+
+## Administración de usuarios
+
+El Gerente tiene la opción **Usuarios** para crear, editar, activar, desactivar y reiniciar contraseñas. La contraseña inicial o restablecida es `Temporal2026*`. El primer ingreso lleva a **Cambiar contraseña**; después de guardarla se debe iniciar sesión otra vez.
+
+El Gerente puede abrir **Roles** para crear, editar permisos y activar o desactivar roles. Al cambiar permisos, los usuarios afectados deben iniciar sesión de nuevo para recibir la nueva configuración. La pantalla de revisión de pedidos inicia con todas las casillas sin marcar y solo permite autorizar cuando están todas confirmadas.

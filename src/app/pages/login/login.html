@@ -19,6 +19,7 @@
       </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="ingresar()" autocomplete="off">
+        <div class="notice success" *ngIf="route.snapshot.queryParamMap.get('passwordUpdated') === '1'">Contraseña actualizada. Iniciá sesión con tu nueva contraseña.</div>
         <div class="form-group">
           <label for="usuario">Usuario</label>
 

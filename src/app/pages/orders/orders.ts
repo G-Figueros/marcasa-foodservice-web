@@ -12,7 +12,7 @@ type Mode = 'pending' | 'authorized' | 'delivery';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="page-heading"><div><p class="section-kicker">GESTIÓN DE PEDIDOS</p><h1>{{ title }}</h1><p>{{ description }}</p></div>
-      @if (auth.can('CREAR_PEDIDOS')) { <a routerLink="/pedidos/nuevo" class="btn btn-primary">＋ Nuevo pedido</a> }
+      @if (mode !== 'authorized' && auth.can('CREAR_PEDIDOS')) { <a routerLink="/pedidos/nuevo" class="btn btn-primary">＋ Nuevo pedido</a> }
     </div>
     <section class="surface">
       <div class="filter-grid">
