@@ -39,6 +39,15 @@ export class AuthService {
     this.state.set(null);
   }
 
+  updateProfile(nombres: string, apellidos: string | null, correo: string | null): void {
+    const current = this.state();
+    if (!current) return;
+    const updated = { ...current, usuario: { ...current.usuario,
+      nombreCompleto: [nombres, apellidos].filter(Boolean).join(' '), correo } };
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+    this.state.set(updated);
+  }
+
   token(): string | null {
     return this.isAuthenticated() ? this.state()?.token ?? null : null;
   }

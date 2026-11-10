@@ -25,7 +25,10 @@ Aplicación Angular 22 conectada al API .NET del proyecto. Incluye acceso con JW
 
 Las rutas y botones se muestran según los permisos que el backend devuelve al iniciar sesión. Los cambios de pedido se envían a los procedimientos almacenados, que validan permisos, estados y stock. La hoja de ruta puede imprimirse o guardarse como PDF desde el navegador.
 
-La base actual solo tiene SP de consulta para clientes, productos e inventario; el frontend muestra esos catálogos, sin formularios de alta/edición. El API recibe metadatos de evidencia de entrega, pero todavía no incluye carga de archivos, por lo que esta interfaz confirma entregas sin adjuntos.
+Gerente y Supervisora pueden crear, editar y desactivar clientes y productos, además de ajustar las existencias disponibles en inventario con un motivo. Los clientes y productos inactivos siguen visibles en los listados, pero no se pueden agregar a pedidos nuevos. El API recibe metadatos de evidencia de entrega, pero todavía no incluye carga de archivos, por lo que esta interfaz confirma entregas sin adjuntos.
+
+Para estas funciones, aplicar una vez `BD/LÓGICA/catalogo_cuenta_v4.sql` en la base local o publicada. El script también habilita la edición de datos personales desde **Información de la cuenta**.
+Para gestionar clientes, aplicar además `BD/LÓGICA/clientes_admin_v5.sql`.
 
 ## Verificación
 

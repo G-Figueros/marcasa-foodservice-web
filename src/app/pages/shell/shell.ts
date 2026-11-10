@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
@@ -34,10 +34,18 @@ import { AuthService } from '../../core/auth.service';
           <button class="menu-toggle" aria-label="Abrir menú" (click)="menuOpen.set(!menuOpen())">☰</button>
           <div class="topbar-context"><span class="eyebrow">MARCASA FOODSERVICE</span><strong>Sistema de gestión</strong></div>
           <div class="topbar-user">
-            <span class="avatar">{{ initials() }}</span>
-            <span class="user-meta"><strong>{{ auth.user()?.nombreCompleto }}</strong><small>{{ auth.user()?.nombreRol }}</small></span>
-            <a class="btn btn-quiet" routerLink="/cambiar-contrasena" title="Cambiar contraseña">Contraseña</a>
-            <button class="btn btn-quiet" (click)="logout()" title="Cerrar sesión">Salir</button>
+            <button class="account-trigger" type="button" (click)="accountOpen.set(!accountOpen())"
+              [attr.aria-expanded]="accountOpen()" aria-haspopup="menu" aria-label="Opciones de cuenta">
+              <span class="avatar">{{ initials() }}</span>
+              <span class="user-meta"><strong>{{ auth.user()?.nombreCompleto }}</strong><small>{{ auth.user()?.nombreRol }}</small></span>
+              <span aria-hidden="true">⌄</span>
+            </button>
+            @if (accountOpen()) {
+              <div class="account-menu" role="menu">
+                <a routerLink="/cuenta" role="menuitem" (click)="accountOpen.set(false)">Información de la cuenta</a>
+                <button type="button" role="menuitem" (click)="logout()">Cerrar sesión</button>
+              </div>
+            }
           </div>
         </header>
         <main class="page-content"><router-outlet /></main>
@@ -48,7 +56,18 @@ import { AuthService } from '../../core/auth.service';
 export class Shell {
   readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly element = inject(ElementRef<HTMLElement>);
   readonly menuOpen = signal(false);
+  readonly accountOpen = signal(false);
+
+  @HostListener('document:click', ['$event'])
+  closeAccountOutside(event: MouseEvent): void {
+    if (!this.element.nativeElement.querySelector('.topbar-user')?.contains(event.target as Node))
+      this.accountOpen.set(false);
+  }
+
+  @HostListener('document:keydown.escape')
+  closeAccountOnEscape(): void { this.accountOpen.set(false); }
 
   initials(): string {
     return (this.auth.user()?.nombreCompleto || 'U').split(' ').slice(0, 2)

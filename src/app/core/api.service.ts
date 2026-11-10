@@ -1,14 +1,17 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
-  ApiResponse, Cliente, EstadoResultado, Inventario, Pedido, PedidoFiltro,
+  ApiResponse, Cliente, GuardarCliente, EstadoResultado, Inventario, Pedido, PedidoFiltro,
   PedidoResumen, Producto, RutaFila, UsuarioAdmin, RolUsuario, GuardarUsuario,
-  RolAdmin, PermisoRol, GuardarRol
+  RolAdmin, PermisoRol, GuardarRol, Cuenta, ActualizarCuenta, GuardarProducto, AjustarInventario
 } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
+
+  cuenta() { return this.http.get<ApiResponse<Cuenta>>('/api/cuenta'); }
+  actualizarCuenta(data: ActualizarCuenta) { return this.http.put<ApiResponse<Cuenta>>('/api/cuenta', data); }
 
   usuarios() { return this.http.get<ApiResponse<UsuarioAdmin[]>>('/api/usuarios'); }
   rolesUsuarios() { return this.http.get<ApiResponse<RolUsuario[]>>('/api/usuarios/roles'); }
@@ -36,17 +39,27 @@ export class ApiService {
     return this.http.patch<ApiResponse<unknown>>(`/api/roles/${id}/estado`, { activo });
   }
 
-  clientes(textoBusqueda = '') {
-    return this.http.get<ApiResponse<Cliente[]>>('/api/clientes', { params: { textoBusqueda } });
+  clientes(textoBusqueda = '', soloActivos = true) {
+    return this.http.get<ApiResponse<Cliente[]>>('/api/clientes', { params: { textoBusqueda, soloActivos } });
   }
 
-  productos(textoBusqueda = '') {
-    return this.http.get<ApiResponse<Producto[]>>('/api/productos', { params: { textoBusqueda } });
+  crearCliente(data: GuardarCliente) { return this.http.post<ApiResponse<{ clienteId: number }>>('/api/clientes', data); }
+  editarCliente(id: number, data: GuardarCliente) { return this.http.put<ApiResponse<unknown>>(`/api/clientes/${id}`, data); }
+  estadoCliente(id: number, activo: boolean) { return this.http.patch<ApiResponse<unknown>>(`/api/clientes/${id}/estado`, { activo }); }
+
+  productos(textoBusqueda = '', soloActivos = true) {
+    return this.http.get<ApiResponse<Producto[]>>('/api/productos', { params: { textoBusqueda, soloActivos } });
   }
 
-  inventario(textoBusqueda = '') {
-    return this.http.get<ApiResponse<Inventario[]>>('/api/inventario', { params: { textoBusqueda } });
+  crearProducto(data: GuardarProducto) { return this.http.post<ApiResponse<{ productoId: number }>>('/api/productos', data); }
+  editarProducto(id: number, data: GuardarProducto) { return this.http.put<ApiResponse<unknown>>(`/api/productos/${id}`, data); }
+  estadoProducto(id: number, activo: boolean) { return this.http.patch<ApiResponse<unknown>>(`/api/productos/${id}/estado`, { activo }); }
+
+  inventario(textoBusqueda = '', soloActivos = true) {
+    return this.http.get<ApiResponse<Inventario[]>>('/api/inventario', { params: { textoBusqueda, soloActivos } });
   }
+
+  ajustarInventario(id: number, data: AjustarInventario) { return this.http.put<ApiResponse<unknown>>(`/api/inventario/${id}`, data); }
 
   pendientes(filtro: PedidoFiltro = {}) {
     return this.http.get<ApiResponse<PedidoResumen[]>>('/api/pedidos/pendientes-autorizacion', { params: this.params(filtro) });

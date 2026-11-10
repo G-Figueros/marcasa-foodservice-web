@@ -20,6 +20,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'panel', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
+      { path: 'cuenta', loadComponent: () => import('./pages/account/account').then(m => m.Account) },
       { path: 'usuarios', loadComponent: () => import('./pages/users/users').then(m => m.Users), data: { role: 'Gerente', permissions: ['VER_USUARIOS'] }, canActivate: [permissionGuard] },
       { path: 'roles', loadComponent: () => import('./pages/roles/roles').then(m => m.Roles), data: { role: 'Gerente', permissions: ['VER_ROLES'] }, canActivate: [permissionGuard] },
       { path: 'clientes', loadComponent: () => import('./pages/catalog/catalog').then(m => m.Catalog), data: { kind: 'clientes', permissions: ['VER_CLIENTES'] }, canActivate: [permissionGuard] },

@@ -73,6 +73,39 @@ export interface GuardarUsuario {
   rolId: number;
 }
 
+export interface Cuenta {
+  usuarioId: number;
+  nombreUsuario: string;
+  nombres: string;
+  apellidos: string | null;
+  correo: string | null;
+  telefono: string | null;
+  nombreRol: string;
+}
+
+export interface ActualizarCuenta {
+  nombres: string;
+  apellidos: string | null;
+  correo: string | null;
+  telefono: string | null;
+}
+
+export interface GuardarProducto {
+  codigoProducto: string;
+  nombre: string;
+  permitePesoNeto: boolean;
+  permitePesoBruto: boolean;
+  pesoNetoBolsaLbs: number | null;
+  pesoBrutoBolsaLbs: number | null;
+  sePesaAlDespachar: boolean;
+}
+
+export interface AjustarInventario {
+  stockDisponibleLbs: number;
+  cantidadBolsasDisponible: number;
+  observacion: string;
+}
+
 export interface Cliente {
   clienteId: number;
   codigoCliente: string;
@@ -82,7 +115,19 @@ export interface Cliente {
   contacto: string | null;
   telefono: string | null;
   direccion: string | null;
+  observaciones: string | null;
   activo: boolean;
+}
+
+export interface GuardarCliente {
+  codigoCliente: string;
+  nombreComercial: string;
+  razonSocial: string | null;
+  nit: string | null;
+  contacto: string | null;
+  telefono: string | null;
+  direccion: string | null;
+  observaciones: string | null;
 }
 
 export interface Producto {
